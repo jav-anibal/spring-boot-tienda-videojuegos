@@ -13,7 +13,7 @@ import java.util.Optional;
 @Service // Marca esta clase como un componente de servicio -> Permitiendo inyectarlas en otras clases
 public class VideojuegoService {
 
-     @Autowired
+     @Autowired // REPOSITORY <-> SERVICE ->  Conecta las capas
     private VideojuegoRepository videojuegoRepository;
 
     // Listar todos los videojuegos
@@ -21,12 +21,14 @@ public class VideojuegoService {
         return videojuegoRepository.findAll();
     }
 
-    // Buscar por ID
+    // Buscar por ID -> Un ID puede no existir en la BD
+    //
+    // Optional -> evita NullPointerException
     public Optional<Videojuego> buscarPorId(Long id) {
         return videojuegoRepository.findById(id);
     }
 
-    // Buscar por género
+    // Buscar por gnero
     public List<Videojuego> buscarPorGenero(String genero) {
         return videojuegoRepository.findByGenero(genero);
     }
@@ -59,7 +61,7 @@ public class VideojuegoService {
         Videojuego videojuego = videojuegoRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Videojuego no encontrado con id: " + id));
 
-        // Aquí validaremos si tiene ventas (lo haremos después)
+
 
         videojuegoRepository.delete(videojuego);
     }
