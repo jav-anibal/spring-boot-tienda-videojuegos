@@ -2,21 +2,23 @@ package com.tienda.videojuegos.repository;
 
 import com.tienda.videojuegos.model.Videojuego;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.util.List;
 
+@Repository // Marca la clase como un componente de acceso a datos
 public interface VideojuegoRepository extends JpaRepository<Videojuego, Long> {
 
-    // Buscar por género (Query Method)
+
     // SELECT * FROM videojuego WHERE genero = ?
     List<Videojuego> findByGenero(String genero);
 
-    // Buscar juegos con precio menor al indicado (Query Method)
+
     // SELECT * FROM videojuego WHERE precio < ?
     List<Videojuego> findByPrecioLessThan(BigDecimal precio);
 
-    // Buscar juegos con stock mayor a 0 (Query Method)
+
     // SELECT * FROM videojuego WHERE stock > 0
     List<Videojuego> findByStockGreaterThan(Integer stock);
 
