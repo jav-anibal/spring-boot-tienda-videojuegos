@@ -3,7 +3,6 @@ package com.tienda.videojuegos.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,7 +13,7 @@ import java.math.BigDecimal;
 
 @Entity
 @Table (name = "videojuego")
-public class VideoJuego {
+public class Videojuego {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

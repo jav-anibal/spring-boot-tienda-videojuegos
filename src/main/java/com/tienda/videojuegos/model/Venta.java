@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 
@@ -33,9 +32,9 @@ public class Venta {
 
     @ManyToOne // (FK)
     @JoinColumn(name = "videojuego_id", nullable = false)
-    private VideoJuego videoJuego;
+    private Videojuego videoJuego;
 
-    public Venta(BigDecimal coste, Cliente cliente, VideoJuego videoJuego) {
+    public Venta(BigDecimal coste, Cliente cliente, Videojuego videoJuego) {
         this.fecha = fecha;
         this.coste = coste;
         this.cliente = cliente;
