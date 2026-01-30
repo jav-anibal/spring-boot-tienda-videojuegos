@@ -16,7 +16,7 @@ public interface VentaRepository extends JpaRepository<Venta, Long> {
 
     // Buscar todas las ventas de un videojuego específico
     // SELECT * FROM venta WHERE videojuego_id = ?
-    List<Venta> findByVideojuegoId(Long videojuegoId);
+    List<Venta> findByVideoJuegoId(Long videoJuegoId);
 
     // Buscar ventas ordenadas por fecha descendente (más reciente primero)
     // SELECT * FROM venta ORDER BY fecha DESC
