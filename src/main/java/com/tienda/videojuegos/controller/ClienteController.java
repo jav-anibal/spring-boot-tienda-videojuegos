@@ -2,7 +2,6 @@ package com.tienda.videojuegos.controller;
 
 import com.tienda.videojuegos.model.Cliente;
 import com.tienda.videojuegos.service.ClienteService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,22 +34,26 @@ public class ClienteController {
     }
 
     @PostMapping  // POST /api/clientes con JSON en body
-    public ResponseEntity<Cliente> crear(@Valid @RequestBody Cliente cliente) {
+    public ResponseEntity<?> crear(@RequestBody Cliente cliente) {
         try {
             Cliente nuevoCliente = clienteService.crear(cliente);
-            return ResponseEntity.status(HttpStatus.CREATED).body(nuevoCliente);  // 201
+            return ResponseEntity.status(HttpStatus.CREATED).body(nuevoCliente);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();  // 409 si email duplicado
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
     }
 
     @PutMapping("/{id}")  // PUT /api/clientes/1
-    public ResponseEntity<Cliente> actualizar(
+    public ResponseEntity<?> actualizar(
             @PathVariable Long id,
-            @Valid @RequestBody Cliente cliente) {
+            @RequestBody Cliente cliente) {
         try {
             Cliente clienteActualizado = clienteService.actualizar(id, cliente);
             return ResponseEntity.ok(clienteActualizado);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }

@@ -1,7 +1,6 @@
 package com.tienda.videojuegos.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
@@ -22,7 +21,6 @@ public class Venta {
     @Column(nullable = false)
     private LocalDateTime fecha;
 
-    @NotNull
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal coste;
 

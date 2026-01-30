@@ -2,7 +2,6 @@ package com.tienda.videojuegos.controller;
 
 import com.tienda.videojuegos.model.Videojuego;
 import com.tienda.videojuegos.service.VideojuegoService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,18 +46,24 @@ public class VideojuegoController {
     }
 
     @PostMapping
-    public ResponseEntity<Videojuego> crear(@Valid @RequestBody Videojuego videojuego) {
-        Videojuego nuevoVideojuego = videojuegoService.crear(videojuego);
-        return ResponseEntity.status(HttpStatus.CREATED).body(nuevoVideojuego);
+    public ResponseEntity<?> crear(@RequestBody Videojuego videojuego) {
+        try {
+            Videojuego nuevoVideojuego = videojuegoService.crear(videojuego);
+            return ResponseEntity.status(HttpStatus.CREATED).body(nuevoVideojuego);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Videojuego> actualizar(
+    public ResponseEntity<?> actualizar(
             @PathVariable Long id,
-            @Valid @RequestBody Videojuego videojuego) {
+            @RequestBody Videojuego videojuego) {
         try {
             Videojuego videojuegoActualizado = videojuegoService.actualizar(id, videojuego);
             return ResponseEntity.ok(videojuegoActualizado);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }

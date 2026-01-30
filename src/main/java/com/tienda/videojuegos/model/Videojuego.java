@@ -1,8 +1,6 @@
 package com.tienda.videojuegos.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,21 +21,15 @@ public class Videojuego {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
     @Column(nullable = false)
     private String titulo;
 
-    @NotNull
     @Column(nullable = false)
     private String genero;
 
-    @NotNull
-    @Min(0)  // Precio no puede ser negativo
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal precio;
 
-    @NotNull
-    @Min(0)  // Stock no puede ser negativo
     @Column(nullable = false)
     private Integer stock;
 }

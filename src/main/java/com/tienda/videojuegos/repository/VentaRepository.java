@@ -18,6 +18,6 @@ public interface VentaRepository extends JpaRepository<Venta, Long> {
     List<Venta> findAllByOrderByFechaDesc();  // mas recientes primero
 
 
-    // mtodo para verificar si un videojuego tiene ventas
-    boolean existsByVideojuegoId(Long videojuegoId);
+    // metodo para verificar si un videojuego tiene ventas
+    boolean existsByVideoJuegoId(Long videoJuegoId);
 }

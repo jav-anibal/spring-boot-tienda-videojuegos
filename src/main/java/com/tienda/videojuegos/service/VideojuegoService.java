@@ -39,10 +39,27 @@ public class VideojuegoService {
     }
 
     public Videojuego crear(Videojuego v) {
-        return videojuegoRepository.save(v);  // save sin ID = INSERT
+        validarVideojuego(v);
+        return videojuegoRepository.save(v);
+    }
+
+    private void validarVideojuego(Videojuego v) {
+        if (v.getTitulo() == null || v.getTitulo().isBlank()) {
+            throw new IllegalArgumentException("El titulo es obligatorio");
+        }
+        if (v.getGenero() == null || v.getGenero().isBlank()) {
+            throw new IllegalArgumentException("El genero es obligatorio");
+        }
+        if (v.getPrecio() == null || v.getPrecio().compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("El precio no puede ser negativo");
+        }
+        if (v.getStock() == null || v.getStock() < 0) {
+            throw new IllegalArgumentException("El stock no puede ser negativo");
+        }
     }
 
     public Videojuego actualizar(Long id, Videojuego datos) {
+        validarVideojuego(datos);
         Optional<Videojuego> opt = videojuegoRepository.findById(id);
         if (opt.isEmpty()) {
             throw new RuntimeException("Videojuego no encontrado");
@@ -60,7 +77,7 @@ public class VideojuegoService {
         if (opt.isEmpty()) {
             throw new RuntimeException("Videojuego no encontrado");
         }
-        if (ventaRepository.existsByVideojuegoId(id)) {
+        if (ventaRepository.existsByVideoJuegoId(id)) {
             throw new RuntimeException("CONFLICT");
         }
         videojuegoRepository.delete(opt.get());
