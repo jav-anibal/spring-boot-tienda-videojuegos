@@ -3,6 +3,7 @@ package com.tienda.videojuegos.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,7 +11,7 @@ import java.math.BigDecimal;
 
 @Data
 @NoArgsConstructor
-
+@AllArgsConstructor
 @Entity
 @Table (name = "videojuego")
 public class Videojuego {
@@ -25,11 +26,12 @@ public class Videojuego {
     @Column(nullable = false, length = 255)
     private String genero;
 
-    @NotNull(message = "El género no puede ser nulo")
+    @NotNull(message = "El precio no puede ser nulo")
     @Min(value = 0, message = "El precio no puede ser negativo")
     @Column(precision = 10, scale = 2, nullable = false)
     private BigDecimal precio;
 
+    @NotNull(message = "El stock no puede ser nulo")
     @Min(value = 0, message = "El stock no puede ser negativo")
     @Column(nullable = false)
     private Integer stock;
