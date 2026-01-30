@@ -2,6 +2,7 @@ package com.tienda.videojuegos.service;
 
 import com.tienda.videojuegos.model.Videojuego;
 import com.tienda.videojuegos.repository.VideojuegoRepository;
+import com.tienda.videojuegos.repository.VentaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,9 @@ public class VideojuegoService {
 
     @Autowired
     private VideojuegoRepository videojuegoRepository;
+
+    @Autowired
+    private VentaRepository ventaRepository;
 
     public List<Videojuego> listarTodos() {
         return videojuegoRepository.findAll();
@@ -55,6 +59,9 @@ public class VideojuegoService {
         Optional<Videojuego> opt = videojuegoRepository.findById(id);
         if (opt.isEmpty()) {
             throw new RuntimeException("Videojuego no encontrado");
+        }
+        if (ventaRepository.existsByVideojuegoId(id)) {
+            throw new RuntimeException("CONFLICT");
         }
         videojuegoRepository.delete(opt.get());
     }

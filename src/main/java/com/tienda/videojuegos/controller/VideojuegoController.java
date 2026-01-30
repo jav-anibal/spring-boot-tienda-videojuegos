@@ -70,6 +70,9 @@ public class VideojuegoController {
             videojuegoService.eliminar(id);
             return ResponseEntity.noContent().build();
         } catch (RuntimeException e) {
+            if (e.getMessage().equals("CONFLICT")) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).build();
+            }
             return ResponseEntity.notFound().build();
         }
     }

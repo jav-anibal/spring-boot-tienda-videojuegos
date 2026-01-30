@@ -16,4 +16,8 @@ public interface VentaRepository extends JpaRepository<Venta, Long> {
     List<Venta> findByClienteId(Long clienteId);  // ventas de un cliente
 
     List<Venta> findAllByOrderByFechaDesc();  // mas recientes primero
+
+
+    // mtodo para verificar si un videojuego tiene ventas
+    boolean existsByVideojuegoId(Long videojuegoId);
 }
