@@ -9,7 +9,10 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
-
+/**
+ * Entidad Cliente: representa la tabla "cliente" en la BD.
+ * BigDecimal para saldo evita errores de redondeo con dinero.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,18 +20,18 @@ import java.math.BigDecimal;
 @Table(name = "cliente")
 public class Cliente {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)  // ID autoincremental por la BD
     private Long id;
 
-    @NotNull(message = "El nombre no puede ser nulo")
-    @Column(nullable = false, length = 255)
+    @NotNull
+    @Column(nullable = false)
     private String nombre;
 
-    @Column(nullable = false, length = 255, unique = true)
+    @Column(unique = true)  // No puede haber dos clientes con el mismo email
     private String email;
 
-    @NotNull(message = "El saldo no puede ser nulo")
-    @Min(value = 0, message = "No puede tener un saldo negativo")
-    @Column(nullable = false, precision = 10, scale = 2)
+    @NotNull
+    @Min(0)  // El saldo no puede ser negativo
+    @Column(nullable = false, precision = 10, scale = 2)  // 10 digitos, 2 decimales
     private BigDecimal saldo;
 }

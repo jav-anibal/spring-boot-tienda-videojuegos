@@ -12,7 +12,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
+/**
+ * Logica de compras. Usa los 3 repositorios porque una compra afecta cliente, videojuego y venta.
+ */
 @Service
 public class TiendaService {
 
@@ -25,55 +29,46 @@ public class TiendaService {
     @Autowired
     private VentaRepository ventaRepository;
 
-    /**
-     * Realiza la compra de un videojuego por parte de un cliente.
-     * Operación transaccional: tdo o nada.
-     */
+    /** @Transactional: si falla algo en medio, se deshace t-do (rollback) */
     @Transactional
     public Venta realizarCompra(Long clienteId, Long videojuegoId) {
-        // 1. Verificar que el cliente existe
-        Cliente cliente = clienteRepository.findById(clienteId)
-            .orElseThrow(() -> new RuntimeException("Cliente no encontrado con id: " + clienteId));
-
-        // 2. Verificar que el videojuego existe
-        Videojuego videojuego = videojuegoRepository.findById(videojuegoId)
-            .orElseThrow(() -> new RuntimeException("Videojuego no encontrado con id: " + videojuegoId));
-
-        // 3. Verificar que hay stock disponible
-        if (videojuego.getStock() <= 0) {
-            throw new RuntimeException("No hay stock disponible para el videojuego: " + videojuego.getTitulo());
+        // 1. Buscar cliente y videojuego
+        Optional<Cliente> optCliente = clienteRepository.findById(clienteId);
+        if (optCliente.isEmpty()) {
+            throw new RuntimeException("Cliente no encontrado");
+        }
+        Optional<Videojuego> optVj = videojuegoRepository.findById(videojuegoId);
+        if (optVj.isEmpty()) {
+            throw new RuntimeException("Videojuego no encontrado");
         }
 
-        // 4. Verificar que el cliente tiene saldo suficiente
-        if (cliente.getSaldo().compareTo(videojuego.getPrecio()) < 0) {
-            throw new RuntimeException("Saldo insuficiente. Necesitas: " + videojuego.getPrecio() +
-                                     ", tienes: " + cliente.getSaldo());
+        Cliente cliente = optCliente.get();
+        Videojuego vj = optVj.get();
+
+        // 2. Validar reglas de negocio
+        if (vj.getStock() <= 0) {
+            throw new RuntimeException("Sin stock");
+        }
+        if (cliente.getSaldo().compareTo(vj.getPrecio()) < 0) {  // compareTo: -1 si menor
+            throw new RuntimeException("Saldo insuficiente");
         }
 
-        // 5. Restar el precio del saldo del cliente
-        BigDecimal nuevoSaldo = cliente.getSaldo().subtract(videojuego.getPrecio());
-        cliente.setSaldo(nuevoSaldo);
+        // 3. Actualizar saldo y stock
+        cliente.setSaldo(cliente.getSaldo().subtract(vj.getPrecio()));
         clienteRepository.save(cliente);
 
-        // 6. Restar 1 unidad al stock del videojuego
-        videojuego.setStock(videojuego.getStock() - 1);
-        videojuegoRepository.save(videojuego);
+        vj.setStock(vj.getStock() - 1);
+        videojuegoRepository.save(vj);
 
-        // 7. Crear y guardar el registro de venta
-        Venta venta = new Venta(videojuego.getPrecio(), cliente, videojuego);
+        // 4. Crear registro de venta
+        Venta venta = new Venta(vj.getPrecio(), cliente, vj);
         return ventaRepository.save(venta);
     }
 
-    // Obtener historial de compras de un cliente
     public List<Venta> obtenerHistorialCliente(Long clienteId) {
-        // Verificar que el cliente existe
-        clienteRepository.findById(clienteId)
-            .orElseThrow(() -> new RuntimeException("Cliente no encontrado con id: " + clienteId));
-
         return ventaRepository.findByClienteId(clienteId);
     }
 
-    // Obtener todas las ventas
     public List<Venta> obtenerTodasLasVentas() {
         return ventaRepository.findAllByOrderByFechaDesc();
     }

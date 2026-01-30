@@ -11,6 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 
+/**
+ * Utilidades: carga datos de prueba. Borra todo y crea videojuegos + clientes.
+ */
 @Service
 public class UtilsService {
 
@@ -23,17 +26,13 @@ public class UtilsService {
     @Autowired
     private VentaRepository ventaRepository;
 
-    /**
-     * Borra todos los datos y carga datos de prueba
-     */
-    @Transactional
+    @Transactional  // Borrar e insertar en una sola transaccion
     public String cargarDatosDePrueba() {
-        // 1. Borrar todos los datos existentes
-        ventaRepository.deleteAll();
+        ventaRepository.deleteAll();  // Primero ventas (tienen FK a cliente y videojuego)
         videojuegoRepository.deleteAll();
         clienteRepository.deleteAll();
 
-        // 2. Crear videojuegos de prueba
+        // id=null: la BD lo genera al hacer save
         Videojuego v1 = new Videojuego(null, "The Legend of Zelda", "Aventura", new BigDecimal("59.99"), 10);
         Videojuego v2 = new Videojuego(null, "Super Mario Odyssey", "Plataformas", new BigDecimal("49.99"), 15);
         Videojuego v3 = new Videojuego(null, "Elden Ring", "RPG", new BigDecimal("69.99"), 8);
@@ -48,7 +47,6 @@ public class UtilsService {
         videojuegoRepository.save(v5);
         videojuegoRepository.save(v6);
 
-        // 3. Crear clientes de prueba
         Cliente c1 = new Cliente(null, "Juan Pérez", "juan@email.com", new BigDecimal("200.00"));
         Cliente c2 = new Cliente(null, "María García", "maria@email.com", new BigDecimal("150.00"));
         Cliente c3 = new Cliente(null, "Pedro López", "pedro@email.com", new BigDecimal("500.00"));

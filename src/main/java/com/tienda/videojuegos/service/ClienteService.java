@@ -8,53 +8,51 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Logica de negocio para Cliente. El Controller llama aqui, nunca al Repository directo.
+ */
 @Service
 public class ClienteService {
 
-    @Autowired
+    @Autowired  // Spring inyecta el repositorio
     private ClienteRepository clienteRepository;
 
-    // Listar todos los clientes
     public List<Cliente> listarTodos() {
         return clienteRepository.findAll();
     }
 
-    // Buscar por ID
     public Optional<Cliente> buscarPorId(Long id) {
-        return clienteRepository.findById(id);
+        return clienteRepository.findById(id);  // Optional: puede no existir
     }
 
-    // Buscar por email
     public Optional<Cliente> buscarPorEmail(String email) {
         return clienteRepository.findByEmail(email);
     }
 
-    // Crear cliente
     public Cliente crear(Cliente cliente) {
-        // Validar que el email no exista
         if (clienteRepository.existsByEmail(cliente.getEmail())) {
-            throw new RuntimeException("Ya existe un cliente con el email: " + cliente.getEmail());
+            throw new RuntimeException("Email ya existe");
         }
         return clienteRepository.save(cliente);
     }
 
-    // Actualizar cliente
-    public Cliente actualizar(Long id, Cliente clienteActualizado) {
-        return clienteRepository.findById(id)
-            .map(cliente -> {
-                cliente.setNombre(clienteActualizado.getNombre());
-                cliente.setEmail(clienteActualizado.getEmail());
-                cliente.setSaldo(clienteActualizado.getSaldo());
-                return clienteRepository.save(cliente);
-            })
-            .orElseThrow(() -> new RuntimeException("Cliente no encontrado con id: " + id));
+    public Cliente actualizar(Long id, Cliente datos) {
+        Optional<Cliente> opt = clienteRepository.findById(id);
+        if (opt.isEmpty()) {
+            throw new RuntimeException("Cliente no encontrado");
+        }
+        Cliente c = opt.get();
+        c.setNombre(datos.getNombre());
+        c.setEmail(datos.getEmail());
+        c.setSaldo(datos.getSaldo());
+        return clienteRepository.save(c);  // save con ID existente = UPDATE
     }
 
-    // Eliminar cliente
     public void eliminar(Long id) {
-        Cliente cliente = clienteRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Cliente no encontrado con id: " + id));
-
-        clienteRepository.delete(cliente);
+        Optional<Cliente> opt = clienteRepository.findById(id);
+        if (opt.isEmpty()) {
+            throw new RuntimeException("Cliente no encontrado");
+        }
+        clienteRepository.delete(opt.get());
     }
 }

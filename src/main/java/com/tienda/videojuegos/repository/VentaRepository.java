@@ -6,19 +6,14 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * Acceso a BD para Venta.
+ * findByClienteId usa la relacion: venta tiene cliente_id (propiedad "cliente").
+ */
 @Repository
 public interface VentaRepository extends JpaRepository<Venta, Long> {
 
+    List<Venta> findByClienteId(Long clienteId);  // ventas de un cliente
 
-    // Buscar todas las ventas de un cliente específico
-    // SELECT * FROM venta WHERE cliente_id = ?
-    List<Venta> findByClienteId(Long clienteId);
-
-    // Buscar todas las ventas de un videojuego específico
-    // SELECT * FROM venta WHERE videojuego_id = ?
-    List<Venta> findByVideoJuegoId(Long videoJuegoId);
-
-    // Buscar ventas ordenadas por fecha descendente (más reciente primero)
-    // SELECT * FROM venta ORDER BY fecha DESC
-    List<Venta> findAllByOrderByFechaDesc();
+    List<Venta> findAllByOrderByFechaDesc();  // mas recientes primero
 }

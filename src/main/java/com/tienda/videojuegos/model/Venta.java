@@ -7,9 +7,10 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-
-//Muchas ventas pueden pertenecer a un mismo cliente -> @ManyToOne
-
+/**
+ * Entidad Venta: registra cada compra. Relaciona Cliente + Videojuego.
+ * ManyToOne: muchas ventas pueden pertenecer al mismo cliente/videojuego.
+ */
 @NoArgsConstructor
 @Entity
 @Table(name = "venta")
@@ -21,25 +22,24 @@ public class Venta {
     @Column(nullable = false)
     private LocalDateTime fecha;
 
-    @NotNull(message = "El coste no puede ser nulo")
+    @NotNull
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal coste;
 
-    @ManyToOne // (FK) Muchas ventas pueden pertenecer a un mismo client.
+    @ManyToOne  // FK: cada venta tiene un cliente
     @JoinColumn(name = "cliente_id", nullable = false)
     private Cliente cliente;
 
-    @ManyToOne // (FK)
+    @ManyToOne  // FK: cada venta tiene un videojuego
     @JoinColumn(name = "videojuego_id", nullable = false)
     private Videojuego videoJuego;
 
-
-
+    /** Constructor para crear venta: asigna fecha automática */
     public Venta(BigDecimal coste, Cliente cliente, Videojuego videoJuego) {
         this.coste = coste;
         this.cliente = cliente;
         this.videoJuego = videoJuego;
-        this.fecha = LocalDateTime.now(); // fecha actual
+        this.fecha = LocalDateTime.now();
     }
 
     public Long getId() {

@@ -10,6 +10,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * REST API para Cliente. Todas las rutas bajo /api/clientes.
+ * Recibe HTTP, llama al Service, devuelve JSON con codigo de estado.
+ */
 @RestController
 @RequestMapping("/api/clientes")
 public class ClienteController {
@@ -17,47 +21,30 @@ public class ClienteController {
     @Autowired
     private ClienteService clienteService;
 
-    /**
-     * GET /api/clientes
-     * Listar todos los clientes
-     */
-    @GetMapping
+    @GetMapping  // GET /api/clientes
     public ResponseEntity<List<Cliente>> listarTodos() {
         List<Cliente> clientes = clienteService.listarTodos();
         return ResponseEntity.ok(clientes);
     }
 
-    /**
-     * GET /api/clientes/{id}
-     * Obtener un cliente por ID
-     */
-    @GetMapping("/{id}")
+    @GetMapping("/{id}")  // GET /api/clientes/1
     public ResponseEntity<Cliente> obtenerPorId(@PathVariable Long id) {
         return clienteService.buscarPorId(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+                .map(ResponseEntity::ok)           // si existe -> 200 OK
+                .orElse(ResponseEntity.notFound().build());  // si no -> 404
     }
 
-    /**
-     * POST /api/clientes
-     * Crear un nuevo cliente
-     */
-    @PostMapping
+    @PostMapping  // POST /api/clientes con JSON en body
     public ResponseEntity<Cliente> crear(@Valid @RequestBody Cliente cliente) {
         try {
             Cliente nuevoCliente = clienteService.crear(cliente);
-            return ResponseEntity.status(HttpStatus.CREATED).body(nuevoCliente);
+            return ResponseEntity.status(HttpStatus.CREATED).body(nuevoCliente);  // 201
         } catch (RuntimeException e) {
-            // Email duplicado u otro error
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();  // 409 si email duplicado
         }
     }
 
-    /**
-     * PUT /api/clientes/{id}
-     * Actualizar un cliente existente
-     */
-    @PutMapping("/{id}")
+    @PutMapping("/{id}")  // PUT /api/clientes/1
     public ResponseEntity<Cliente> actualizar(
             @PathVariable Long id,
             @Valid @RequestBody Cliente cliente) {
@@ -69,15 +56,11 @@ public class ClienteController {
         }
     }
 
-    /**
-     * DELETE /api/clientes/{id}
-     * Eliminar un cliente
-     */
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}")  // DELETE /api/clientes/1
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         try {
             clienteService.eliminar(id);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.noContent().build();  // 204 sin cuerpo
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }

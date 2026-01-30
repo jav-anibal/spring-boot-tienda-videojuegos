@@ -9,30 +9,35 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
+/**
+ * Entidad Videojuego: representa la tabla "videojuego" en la BD.
+ * Stock = unidades disponibles para vender.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table (name = "videojuego")
+@Table(name = "videojuego")
 public class Videojuego {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotNull(message = "El título no puede ser nulo")
-    @Column(nullable = false, length = 255)
+
+    @NotNull
+    @Column(nullable = false)
     private String titulo;
 
-    @NotNull(message = "El género no puede ser nulo")
-    @Column(nullable = false, length = 255)
+    @NotNull
+    @Column(nullable = false)
     private String genero;
 
-    @NotNull(message = "El precio no puede ser nulo")
-    @Min(value = 0, message = "El precio no puede ser negativo")
-    @Column(precision = 10, scale = 2, nullable = false)
+    @NotNull
+    @Min(0)  // Precio no puede ser negativo
+    @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal precio;
 
-    @NotNull(message = "El stock no puede ser nulo")
-    @Min(value = 0, message = "El stock no puede ser negativo")
+    @NotNull
+    @Min(0)  // Stock no puede ser negativo
     @Column(nullable = false)
     private Integer stock;
 }

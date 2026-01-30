@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * REST API para operaciones de tienda: comprar, ver ventas.
+ */
 @RestController
 @RequestMapping("/api/tienda")
 public class TiendaController {
@@ -16,12 +19,7 @@ public class TiendaController {
     @Autowired
     private TiendaService tiendaService;
 
-    /**
-     * POST /api/tienda/comprar
-     * Realizar una compra
-     * Body: { "clienteId": 1, "videojuegoId": 3 }
-     */
-    @PostMapping("/comprar")
+    @PostMapping("/comprar")  // POST con body { "clienteId": 1, "videojuegoId": 3 }
     public ResponseEntity<?> comprar(@RequestBody CompraRequest request) {
         try {
             Venta venta = tiendaService.realizarCompra(
@@ -30,41 +28,23 @@ public class TiendaController {
             );
             return ResponseEntity.status(HttpStatus.CREATED).body(venta);
         } catch (RuntimeException e) {
-            // Puede ser: cliente no existe, videojuego no existe, sin stock, sin saldo
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new ErrorResponse(e.getMessage()));
         }
     }
 
-    /**
-     * GET /api/tienda/ventas
-     * Obtener todas las ventas
-     */
     @GetMapping("/ventas")
     public ResponseEntity<List<Venta>> obtenerTodasLasVentas() {
         List<Venta> ventas = tiendaService.obtenerTodasLasVentas();
         return ResponseEntity.ok(ventas);
     }
 
-    /**
-     * GET /api/tienda/ventas/cliente/{clienteId}
-     * Obtener historial de compras de un cliente
-     */
-    @GetMapping("/ventas/cliente/{clienteId}")
-    public ResponseEntity<?> obtenerHistorialCliente(@PathVariable Long clienteId) {
-        try {
-            List<Venta> ventas = tiendaService.obtenerHistorialCliente(clienteId);
-            return ResponseEntity.ok(ventas);
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+    @GetMapping("/ventas/cliente/{clienteId}")  // historial de compras de un cliente
+    public ResponseEntity<List<Venta>> obtenerHistorialCliente(@PathVariable Long clienteId) {
+        List<Venta> ventas = tiendaService.obtenerHistorialCliente(clienteId);
+        return ResponseEntity.ok(ventas);
     }
 
-    // Clases auxiliares para request/response
-
-    /**
-     * DTO para la petición de compra
-     */
     public static class CompraRequest {
         private Long clienteId;
         private Long videojuegoId;
@@ -86,9 +66,7 @@ public class TiendaController {
         }
     }
 
-    /**
-     * DTO para respuestas de error
-     */
+    /** DTO para devolver errores en JSON: { "mensaje": "..." } */
     public static class ErrorResponse {
         private String mensaje;
 

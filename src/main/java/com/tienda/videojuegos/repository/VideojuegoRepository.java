@@ -7,19 +7,14 @@ import org.springframework.stereotype.Repository;
 import java.math.BigDecimal;
 import java.util.List;
 
-@Repository // Marca la clase como un componente de acceso a datos
+/**
+ * Acceso a BD para Videojuego.
+ * findByPrecioLessThan = videojuegos con precio menor que X (ofertas).
+ */
+@Repository
 public interface VideojuegoRepository extends JpaRepository<Videojuego, Long> {
 
+    List<Videojuego> findByGenero(String genero);  // WHERE genero = ?
 
-    // SELECT * FROM videojuego WHERE genero = ?
-    List<Videojuego> findByGenero(String genero);
-
-
-    // SELECT * FROM videojuego WHERE precio < ?
-    List<Videojuego> findByPrecioLessThan(BigDecimal precio);
-
-
-    // SELECT * FROM videojuego WHERE stock > 0
-    List<Videojuego> findByStockGreaterThan(Integer stock);
-
+    List<Videojuego> findByPrecioLessThan(BigDecimal precio);  // WHERE precio < ?
 }

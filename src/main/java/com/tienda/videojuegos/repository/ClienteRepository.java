@@ -6,15 +6,14 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-
+/**
+ * Acceso a BD para Cliente. Hereda findAll, findById, save, delete...
+ * Spring Data genera el SQL segun el nombre del metodo (findByEmail -> WHERE email = ?)
+ */
 @Repository
 public interface ClienteRepository extends JpaRepository<Cliente, Long> {
 
-    // Buscar cliente por email (debe ser único)
-    // SELECT * FROM cliente WHERE email = ?
-    Optional<Cliente> findByEmail(String email);
+    Optional<Cliente> findByEmail(String email);  // puede no existir -> Optional
 
-    // Verificar si existe un cliente con ese email
-    // SELECT COUNT(*) > 0 FROM cliente WHERE email = ?
-    boolean existsByEmail(String email);
+    boolean existsByEmail(String email);  // para validar antes de crear
 }
